@@ -8,11 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
 import com.example.android.sqlitetest.ProductContract.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -72,15 +68,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void printDatabase() {
+        // clear current list
+        mProductList.setText("");
+
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
 
         String[] projection = {
                 ProductEntry._ID,
                 ProductEntry.COLUMN_NAME_NAME
         };
-
-//        String selection = ProductEntry.COLUMN_NAME_NAME + " = ?";
-//        String[] selectionArgs = { "Some Product Name" };
 
         String sortOrder = ProductEntry.COLUMN_NAME_NAME + " ASC";
 
