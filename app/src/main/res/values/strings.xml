@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">SQLite Test</string>
+    <string name="add_product">Add Product</string>
+    <string name="delete_product">Delete Product</string>
+</resources>
