@@ -1,5 +1,6 @@
 package com.example.android.sqlitetest.data;
 
+import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -21,6 +22,8 @@ public final class ProductContract {
     // inner class defines the table
     public static class ProductEntry implements BaseColumns {
         public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_URI, PATH_PRODUCT);
+        public static final String PRODUCT_LIST_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PRODUCT;
+        public static final String PRODUCT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PRODUCT;
         public static final String _ID = BaseColumns._ID;
         public static final String TABLE_NAME = "product";
         public static final String COLUMN_NAME_NAME = "name";
