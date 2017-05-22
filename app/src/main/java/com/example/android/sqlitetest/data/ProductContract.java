@@ -1,4 +1,4 @@
-package com.example.android.sqlitetest;
+package com.example.android.sqlitetest.data;
 
 import android.provider.BaseColumns;
 
@@ -15,6 +15,7 @@ public final class ProductContract {
 
     // inner class defines the table
     public static class ProductEntry implements BaseColumns {
+        public static final String _ID = BaseColumns._ID;
         public static final String TABLE_NAME = "product";
         public static final String COLUMN_NAME_NAME = "name";
     }

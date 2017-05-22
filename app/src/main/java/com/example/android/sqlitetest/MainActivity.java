@@ -8,7 +8,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import com.example.android.sqlitetest.ProductContract.*;
+import com.example.android.sqlitetest.data.ProductContract.*;
+import com.example.android.sqlitetest.data.ProductHelper;
 
 public class MainActivity extends AppCompatActivity {
 

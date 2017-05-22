@@ -1,9 +1,9 @@
-package com.example.android.sqlitetest;
+package com.example.android.sqlitetest.data;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import com.example.android.sqlitetest.ProductContract.*;
+import com.example.android.sqlitetest.data.ProductContract.*;
 
 /**
  * Created by edaly on 5/15/2017.
