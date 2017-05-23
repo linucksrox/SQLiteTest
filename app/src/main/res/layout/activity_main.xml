@@ -29,11 +29,9 @@
             android:paddingLeft="16dp"/>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tv_product_list"
+    <ListView
+        android:id="@+id/product_list"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Product List"
-        android:paddingLeft="16dp"/>
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

@@ -8,14 +8,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.android.sqlitetest.data.ProductContract.*;
+import com.example.android.sqlitetest.data.ProductCursorAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextView mProductList;
+    ListView mProductList;
     Button mAddProductButton;
     Button mDeleteProductButton;
 
@@ -24,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mProductList = (TextView) findViewById(R.id.tv_product_list);
+        mProductList = (ListView) findViewById(R.id.product_list);
         mAddProductButton = (Button) findViewById(R.id.btn_add_product);
         mDeleteProductButton = (Button) findViewById(R.id.btn_delete_product);
 
@@ -74,9 +75,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void printDatabase() {
-        // clear current list
-        mProductList.setText("");
-
         String[] projection = {
                 ProductEntry._ID,
                 ProductEntry.COLUMN_NAME_NAME
@@ -86,9 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
         Cursor cursor = getContentResolver().query(ProductEntry.CONTENT_URI, projection, null, null, sortOrder);
 
-        while (cursor.moveToNext()) {
-            mProductList.append(cursor.getString(cursor.getColumnIndexOrThrow(ProductEntry.COLUMN_NAME_NAME)) + "\n");
-        }
-        cursor.close();
+        ProductCursorAdapter productCursorAdapter = new ProductCursorAdapter(this, cursor);
+        mProductList.setAdapter(productCursorAdapter);
     }
 }
