@@ -76,7 +76,21 @@ public class ProductProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues contentValues) {
-        return null;
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case PRODUCTS:
+                return insertProduct(uri, contentValues);
+            default:
+                throw new IllegalArgumentException("Insertion is not supported for " + uri);
+        }
+    }
+
+    private Uri insertProduct(Uri uri, ContentValues values) {
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        long id = db.insert(ProductEntry.TABLE_NAME, null, values);
+
+        return ContentUris.withAppendedId(uri, id);
     }
 
     @Override

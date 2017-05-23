@@ -1,19 +1,20 @@
 package com.example.android.sqlitetest;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.example.android.sqlitetest.data.ProductContract.*;
-import com.example.android.sqlitetest.data.ProductHelper;
 
 public class MainActivity extends AppCompatActivity {
 
-    ProductHelper mDbHelper;
     TextView mProductList;
     Button mAddProductButton;
     Button mDeleteProductButton;
@@ -30,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         mAddProductButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                addProduct();
+                addProduct();
                 printDatabase();
             }
         });
@@ -46,19 +47,25 @@ public class MainActivity extends AppCompatActivity {
         printDatabase();
     }
 
-//    public long addProduct() {
-//        // get the database in write mode
-//        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-//
-//        // create map of values
-//        ContentValues values = new ContentValues();
-//        values.put(ProductEntry.COLUMN_NAME_NAME, "sample product");
-//
-//        // insert the new row, returning the primary key value of the new row
-//        long newRowId = db.insert(ProductEntry.TABLE_NAME, null, values);
-//
-//        return newRowId;
-//    }
+    public long addProduct() {
+        // create map of values
+        ContentValues values = new ContentValues();
+        values.put(ProductEntry.COLUMN_NAME_NAME, "sample product");
+
+        // insert the new row using the content provider
+        Uri newProductUri = getContentResolver().insert(ProductEntry.CONTENT_URI, values);
+        Long newRowId = ContentUris.parseId(newProductUri);
+
+        // confirm whether entry was successful or not
+        if (newRowId >= 1) {
+            Toast.makeText(this, "Successfully added new product", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            Toast.makeText(this, "Failed to add new product", Toast.LENGTH_SHORT).show();
+        }
+
+        return newRowId;
+    }
 
 //    public void deleteProduct() {
 //        SQLiteDatabase db = mDbHelper.getWritableDatabase();
@@ -72,8 +79,6 @@ public class MainActivity extends AppCompatActivity {
         // clear current list
         mProductList.setText("");
 
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
-
         String[] projection = {
                 ProductEntry._ID,
                 ProductEntry.COLUMN_NAME_NAME
@@ -81,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
         String sortOrder = ProductEntry.COLUMN_NAME_NAME + " ASC";
 
-        Cursor cursor = db.query(ProductEntry.TABLE_NAME, projection, null, null, null, null, sortOrder);
+        Cursor cursor = getContentResolver().query(ProductEntry.CONTENT_URI, projection, null, null, sortOrder);
 
         while (cursor.moveToNext()) {
             mProductList.append(cursor.getString(cursor.getColumnIndexOrThrow(ProductEntry.COLUMN_NAME_NAME)) + "\n");
