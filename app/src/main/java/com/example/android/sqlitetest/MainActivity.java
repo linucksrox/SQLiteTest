@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         printDatabase();
     }
 
-    public long addProduct() {
+    public void addProduct() {
         // create map of values
         ContentValues values = new ContentValues();
         values.put(ProductEntry.COLUMN_NAME_NAME, "sample product");
@@ -63,8 +63,6 @@ public class MainActivity extends AppCompatActivity {
         else {
             Toast.makeText(this, "Failed to add new product", Toast.LENGTH_SHORT).show();
         }
-
-        return newRowId;
     }
 
 //    public void deleteProduct() {
