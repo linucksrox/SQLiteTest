@@ -94,8 +94,23 @@ public class ProductProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(@NonNull Uri uri, @Nullable String s, @Nullable String[] strings) {
-        return 0;
+    public int delete(@NonNull Uri uri, @Nullable String whereClause, @Nullable String[] whereArgs) {
+        // Get writable database
+        SQLiteDatabase database = mDbHelper.getWritableDatabase();
+
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case PRODUCTS:
+                // Delete all rows that match the whereClause and whereArgs
+                return database.delete(ProductEntry.TABLE_NAME, whereClause, whereArgs);
+            case PRODUCT_ID:
+                // Delete a single row from the pets table using the given ID
+                whereClause = ProductEntry._ID + "=?";
+                whereArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+                return database.delete(ProductEntry.TABLE_NAME, whereClause, whereArgs);
+            default:
+                throw new IllegalArgumentException("Deletion is not supported for " + uri);
+        }
     }
 
     @Override

@@ -36,13 +36,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        mDeleteProductButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                deleteProduct();
-//                printDatabase();
-//            }
-//        });
+        mDeleteProductButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteProduct();
+                printDatabase();
+            }
+        });
 
         printDatabase();
     }
@@ -58,20 +58,20 @@ public class MainActivity extends AppCompatActivity {
 
         // confirm whether entry was successful or not
         if (newRowId >= 1) {
-            Toast.makeText(this, "Successfully added new product", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "Successfully added new product", Toast.LENGTH_SHORT).show();
         }
         else {
             Toast.makeText(this, "Failed to add new product", Toast.LENGTH_SHORT).show();
         }
     }
 
-//    public void deleteProduct() {
-//        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-//
-//        String selection = ProductEntry.COLUMN_NAME_NAME + " LIKE ?";
-//        String[] selectionArgs = { "sample product" };
-//        db.delete(ProductEntry.TABLE_NAME, selection, selectionArgs);
-//    }
+    public void deleteProduct() {
+        String selection = ProductEntry.COLUMN_NAME_NAME + " LIKE ?";
+        String[] selectionArgs = { "sample product" };
+        int numRowsDeleted = getContentResolver().delete(ProductEntry.CONTENT_URI, selection, selectionArgs);
+
+        Toast.makeText(this, "Deleted " + numRowsDeleted + " rows", Toast.LENGTH_SHORT).show();
+    }
 
     public void printDatabase() {
         // clear current list
