@@ -4,6 +4,9 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -14,11 +17,13 @@ import android.widget.Toast;
 import com.example.android.sqlitetest.data.ProductContract.*;
 import com.example.android.sqlitetest.data.ProductCursorAdapter;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     ListView mProductList;
     Button mAddProductButton;
     Button mDeleteProductButton;
+    private static final int PRODUCT_LOADER = 0;
+    private ProductCursorAdapter mCursorAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 addProduct();
-                printDatabase();
             }
         });
 
@@ -41,11 +45,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 deleteProduct();
-                printDatabase();
             }
         });
 
-        printDatabase();
+        mCursorAdapter = new ProductCursorAdapter(this, null);
+        mProductList.setAdapter(mCursorAdapter);
+
+        getSupportLoaderManager().initLoader(PRODUCT_LOADER, null, this);
     }
 
     public void addProduct() {
@@ -74,7 +80,8 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "Deleted " + numRowsDeleted + " rows", Toast.LENGTH_SHORT).show();
     }
 
-    public void printDatabase() {
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String[] projection = {
                 ProductEntry._ID,
                 ProductEntry.COLUMN_NAME_NAME
@@ -82,9 +89,16 @@ public class MainActivity extends AppCompatActivity {
 
         String sortOrder = ProductEntry.COLUMN_NAME_NAME + " ASC";
 
-        Cursor cursor = getContentResolver().query(ProductEntry.CONTENT_URI, projection, null, null, sortOrder);
+        return new CursorLoader(this, ProductEntry.CONTENT_URI, projection, null, null, sortOrder);
+    }
 
-        ProductCursorAdapter productCursorAdapter = new ProductCursorAdapter(this, cursor);
-        mProductList.setAdapter(productCursorAdapter);
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mCursorAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mCursorAdapter.swapCursor(null);
     }
 }

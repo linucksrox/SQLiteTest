@@ -90,6 +90,8 @@ public class ProductProvider extends ContentProvider {
 
         long id = db.insert(ProductEntry.TABLE_NAME, null, values);
 
+        getContext().getContentResolver().notifyChange(uri, null);
+
         return ContentUris.withAppendedId(uri, id);
     }
 
@@ -98,19 +100,29 @@ public class ProductProvider extends ContentProvider {
         // Get writable database
         SQLiteDatabase database = mDbHelper.getWritableDatabase();
 
+        int numRowsDeleted = 0;
+
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case PRODUCTS:
                 // Delete all rows that match the whereClause and whereArgs
-                return database.delete(ProductEntry.TABLE_NAME, whereClause, whereArgs);
+                numRowsDeleted = database.delete(ProductEntry.TABLE_NAME, whereClause, whereArgs);
+                break;
             case PRODUCT_ID:
                 // Delete a single row from the pets table using the given ID
                 whereClause = ProductEntry._ID + "=?";
                 whereArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
-                return database.delete(ProductEntry.TABLE_NAME, whereClause, whereArgs);
+                numRowsDeleted = database.delete(ProductEntry.TABLE_NAME, whereClause, whereArgs);
+                break;
             default:
                 throw new IllegalArgumentException("Deletion is not supported for " + uri);
         }
+
+        if (numRowsDeleted != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        return numRowsDeleted;
     }
 
     @Override
